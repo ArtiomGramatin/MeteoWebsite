@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meteo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Acasă</a></li>
+                <li><a href="about.html">Despre noi</a></li>
+                <li><a href="graphs.html">Grafice</a></li>
+            </ul>
+        </nav>
+        <button id="language-toggle">EN</button>
+    </header>
+
+    <div id="weather-app">
+        <h1><span data-key="weatherFor">Meteo pentru</span> <span id="city-name"></span></h1>
+        <input type="text" id="city-search" placeholder="Introdu numele orașului..." />
+        <button id="search-button" data-key="search">Caută</button>
+        
+        <div id="weather-details">
+            <h2 id="weekday-date"></h2>
+            <div id="temperature"></div>
+            <div id="precipitation"></div>
+        </div>
+
+        <div class="hourly-info">
+            <h3 data-key="hourlyInfo">Informații orare</h3>
+            <div id="hourly-details"></div>
+        </div>
+
+        <div class="navigation">
+            <button id="prev-day">&#8249;</button>
+            <button id="next-day">&#8250;</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

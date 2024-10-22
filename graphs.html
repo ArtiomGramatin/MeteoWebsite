@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grafice</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Acasă</a></li>
+                <li><a href="about.html">Despre noi</a></li>
+                <li><a href="map.html">Hartă</a></li>
+                <li><a href="graphs.html">Grafice</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1>Grafice Meteorologice</h1>
+
+        <canvas id="temperatureChart"></canvas>
+        <canvas id="precipitationChart"></canvas>
+        <canvas id="windSpeedChart"></canvas>
+        <canvas id="humidityChart"></canvas>
+    </div>
+
+    <script>
+        const apiKey = 'b61d3f42c307ed45a83c9f184336c803';
+        const cityName = 'Chișinău';
+        const url = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${apiKey}&units=metric`;
+
+        async function fetchWeatherData() {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`Network response was not ok: ${response.statusText}`);
+                const data = await response.json();
+                updateCharts(data);
+            } catch (error) {
+                console.error("Eroare la preluarea datelor:", error);
+            }
+        }
+
+        function updateCharts(data) {
+            const labels = data.list.map(item => {
+                const date = new Date(item.dt * 1000);
+                return `${date.getHours()}:00`;
+            });
+
+            const temperatureData = data.list.map(item => item.main.temp);
+            const precipitationData = data.list.map(item => item.rain ? item.rain['1h'] || 0 : 0);
+            const windSpeedData = data.list.map(item => item.wind.speed);
+            const humidityData = data.list.map(item => item.main.humidity);
+
+            createTemperatureChart(labels, temperatureData);
+            createPrecipitationChart(labels, precipitationData);
+            createWindSpeedChart(labels, windSpeedData);
+            createHumidityChart(labels, humidityData);
+        }
+
+        function createTemperatureChart(labels, data) {
+            const temperatureChart = new Chart(document.getElementById("temperatureChart"), {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Temperatura (°C)',
+                        data: data,
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        fill: true,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: true }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        function createPrecipitationChart(labels, data) {
+            const precipitationChart = new Chart(document.getElementById("precipitationChart"), {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Precipitații (mm)',
+                        data: data,
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: true }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        function createWindSpeedChart(labels, data) {
+            const windSpeedChart = new Chart(document.getElementById("windSpeedChart"), {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Viteza Vântului (km/h)',
+                        data: data,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        fill: true,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: true }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        function createHumidityChart(labels, data) {
+            const humidityChart = new Chart(document.getElementById("humidityChart"), {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Umiditate (%)',
+                        data: data,
+                        backgroundColor: 'rgba(255, 206, 86, 0.5)',
+                        borderColor: 'rgba(255, 206, 86, 1)',
+                        borderWidth: 1,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: true }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+        fetchWeatherData();
+    </script>
+</body>
+</html>
